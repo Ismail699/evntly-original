@@ -275,3 +275,10 @@ body {
   background-color: #624cf5 !important;
 }
 
+.p-semibold-14 {
+  display: inline-block; /* Ensures the element only takes up as much width as necessary */
+  max-width: 100%; /* Sets the maximum width to 100% of its container */
+  overflow: hidden; /* Hides any content that overflows the max-width */
+  white-space: nowrap; /* Prevents text from wrapping to the next line */
+  text-overflow: ellipsis; /* Adds an ellipsis (...) to indicate truncated text */
+}

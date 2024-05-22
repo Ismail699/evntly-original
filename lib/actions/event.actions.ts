@@ -16,6 +16,7 @@ import {
   GetEventsByUserParams,
   GetRelatedEventsByCategoryParams,
 } from '@/types'
+import { deleteOrders } from './order.actions'
 
 const getCategoryByName = async (name: string) => {
   return Category.findOne({ name: { $regex: name, $options: 'i' } })
@@ -30,19 +31,24 @@ const populateEvent = (query: any) => {
 // CREATE
 export async function createEvent({ userId, event, path }: CreateEventParams) {
   try {
-    await connectToDatabase()
+    await connectToDatabase();
+    console.log("Attempting to find organizer with ID:", userId); // Debugging log
 
-    const organizer = await User.findById(userId)
-    if (!organizer) throw new Error('Organizer not found')
+    const organizer = await User.findById(userId);
+    if (!organizer) {
+      console.error("No organizer found with ID:", userId); // More detailed error logging
+      throw new Error('Organizer not found');
+    }
 
-    const newEvent = await Event.create({ ...event, category: event.categoryId, organizer: userId })
-    revalidatePath(path)
+    const newEvent = await Event.create({ ...event, category: event.categoryId, organizer: userId });
+    revalidatePath(path);
 
-    return JSON.parse(JSON.stringify(newEvent))
+    return JSON.parse(JSON.stringify(newEvent));
   } catch (error) {
-    handleError(error)
+    handleError(error);
   }
 }
+
 
 // GET ONE EVENT BY ID
 export async function getEventById(eventId: string) {
@@ -88,6 +94,7 @@ export async function deleteEvent({ eventId, path }: DeleteEventParams) {
     await connectToDatabase()
 
     const deletedEvent = await Event.findByIdAndDelete(eventId)
+    await deleteOrders({ eventId });
     if (deletedEvent) revalidatePath(path)
   } catch (error) {
     handleError(error)
