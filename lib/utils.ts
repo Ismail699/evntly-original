@@ -2,9 +2,8 @@ import { type ClassValue, clsx } from "clsx";
 
 import { twMerge } from "tailwind-merge";
 import qs from "query-string";
-import { auth } from "@clerk/nextjs/server";
 import { UrlQueryParams, RemoveUrlQueryParams } from "@/types";
-import { clerkClient, currentUser } from "@clerk/nextjs/server";
+import { auth,clerkClient, currentUser } from "@clerk/nextjs/server";
 import { connectToDatabase } from "./database";
 import User from "./database/models/user.model";
 import { createUser, updateUser } from "./actions/user.actions";
